@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  rag-pipeline:
+    build: .
+    container_name: rag-pipeline
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ./data/documents:/app/data/documents
+      - ./data/index:/app/data/index
+    working_dir: /app
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+
+# Build: docker-compose build
+# Run ingestion: docker-compose run rag-pipeline python src/cli.py ingest data/documents
+# Query: docker-compose run rag-pipeline python src/cli.py query "your question"

@@ -1,0 +1,24 @@
+name: Docker Build
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Build Docker image
+      run: |
+        docker build -t rag-pipeline:latest .
+    
+    - name: Verify image
+      run: |
+        docker run --rm rag-pipeline:latest python validate.py

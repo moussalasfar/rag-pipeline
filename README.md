@@ -98,6 +98,24 @@ pytest tests/test_ingestion.py -v
 pytest --cov=src tests/
 ```
 
+## Docker Setup (Optional)
+
+### Build and run with Docker:
+
+```bash
+# Build the image
+docker build -t rag-pipeline .
+
+# Run ingestion
+docker run --rm -e OPENAI_API_KEY=sk-... \
+  -v $(pwd)/data/documents:/app/data/documents \
+  -v $(pwd)/data/index:/app/data/index \
+  rag-pipeline python src/cli.py ingest data/documents
+
+# Or use docker-compose
+docker-compose run rag-pipeline python src/cli.py ingest data/documents
+```
+
 ## Validation
 
 Critical paths tested:
@@ -106,6 +124,11 @@ Critical paths tested:
 - ✅ Similarity search retrieval
 - ✅ Answer generation with context
 - ✅ End-to-end ingestion → query pipeline
+
+Run validation script:
+```bash
+python validate.py
+```
 
 ## Next Steps / Improvements
 
