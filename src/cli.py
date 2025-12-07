@@ -1,11 +1,8 @@
-"""CLI interface for the RAG pipeline."""
-
 import sys
 import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Load environment variables
 load_dotenv()
 
 from src.ingestion import DocumentIngester
@@ -14,7 +11,6 @@ from src.generation import AnswerGenerator, RAGPipeline
 
 
 def ingest_command(data_dir: str):
-    """Ingest documents from a directory."""
     if not Path(data_dir).exists():
         print(f"❌ Directory not found: {data_dir}")
         return
@@ -26,7 +22,6 @@ def ingest_command(data_dir: str):
         print("❌ No documents found to ingest")
         return
     
-    # Create vector store and add documents
     vector_store = VectorStore()
     vector_store.add_documents(chunks)
     vector_store.save()
@@ -35,8 +30,6 @@ def ingest_command(data_dir: str):
 
 
 def query_command(query: str, k: int = 4):
-    """Query the knowledge base."""
-    # Load vector store
     vector_store = VectorStore()
     try:
         vector_store.load()
@@ -44,12 +37,10 @@ def query_command(query: str, k: int = 4):
         print("❌ No index found. Run 'python src/cli.py ingest data/documents' first.")
         return
     
-    # Create pipeline
     retriever = Retriever(vector_store)
     generator = AnswerGenerator()
     rag = RAGPipeline(retriever, generator)
     
-    # Answer query
     print(f"\n🔍 Query: {query}\n")
     result = rag.answer(query, k=k)
     
@@ -63,7 +54,6 @@ def query_command(query: str, k: int = 4):
 
 
 def main():
-    """Main CLI entry point."""
     if len(sys.argv) < 2:
         print("""
 Usage: python src/cli.py [command] [args]
